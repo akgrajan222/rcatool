@@ -1,1 +1,8 @@
-node_modules
+# Ignore binary and build tools
+.bin/
+*.exe
+
+# Node tools
+node_modules/
+dist/
+build/
