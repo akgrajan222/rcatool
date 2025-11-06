@@ -1,0 +1,4 @@
+Flask==3.0.3
+Flask-Cors==4.0.1
+spacy==3.7.5
+pytextrank==3.2.4

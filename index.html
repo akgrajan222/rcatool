@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link href="./css/output.css" rel="stylesheet">
+    <link rel="stylesheet" href="./css/all.min.css">
+    <!-- <h1 class="text-3xl font-bold text-green-600 underline">Tailwind Installed ✅</h1> -->
+    <link rel="icon" href="data:,">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RCA Document Management Tool (Offline)</title>
+    <link rel="stylesheet" href="./css/inter.css">
+    <style>
+        /* --- NEW BLUE-GREEN THEME --- */
+        :root {
+            --bg-color: #f8fafc; /* Tailwind slate-50 */
+            --card-bg-color: #ffffff;
+            --border-color: #e5e7eb; /* Tailwind gray-200 */
+            --dashed-border-color: #d1d5db; /* Tailwind gray-300 */
+            
+            --primary-teal: #14b8a6; /* Tailwind teal-500 */
+            --dark-teal: #0d9488;   /* Tailwind teal-600 */
+            --light-teal: #f0fdfa;  /* Tailwind teal-50 */
+            --medium-teal: #ccfbf1; /* Tailwind teal-100 */
+
+            --danger-red: #ef4444; /* Tailwind red-500 */
+            --light-danger-red: #fee2e2; /* Tailwind red-100 */
+            
+            --warning-orange: #f97316; /* Tailwind orange-500 */
+            --light-warning-orange: #fff7ed; /* Tailwind orange-50 */
+
+            --text-primary: #1f2937; /* Tailwind gray-800 */
+            --text-secondary: #6b7280; /* Tailwind gray-500 */
+            --text-light: #f9fafb;
+            
+            --primary-teal-rgb: 20, 184, 166;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: var(--border-color); border-radius: 10px;}
+        ::-webkit-scrollbar-thumb { background: var(--primary-teal); border-radius: 10px;}
+        ::-webkit-scrollbar-thumb:hover { background: var(--dark-teal); }
+
+        /* General Card Style */
+        .card {
+            background-color: var(--card-bg-color);
+            border-radius: 0.75rem; /* 12px */
+            border: 1px solid var(--border-color);
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+        }
+        
+        /* Loader Spinner */
+        .loader {
+            border: 4px solid var(--medium-teal);
+            border-top: 4px solid var(--primary-teal);
+            border-radius: 50%;
+            width: 36px;
+            height: 36px;
+            animation: spin 1s linear infinite;
+            margin: auto;
+        }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+
+        /* New Drag and Drop Area */
+        .drop-zone {
+            border: 2px dashed var(--dashed-border-color);
+            border-radius: 0.5rem;
+            padding: 3rem 1rem;
+            text-align: center;
+            cursor: pointer;
+            transition: background-color 0.2s ease-in-out, border-color 0.2s ease-in-out;
+        }
+        .drop-zone.dragover {
+            background-color: var(--light-teal);
+            border-color: var(--primary-teal);
+        }
+        .drop-zone-text {
+            color: var(--text-secondary);
+        }
+        .drop-zone-link {
+            color: var(--primary-teal);
+            font-weight: 600;
+            text-decoration: none;
+        }
+        .drop-zone-link:hover {
+            text-decoration: underline;
+        }
+
+        /* Badge Styles */
+        .badge-p1 {
+            background: var(--light-warning-orange);
+            color: var(--warning-orange);
+            font-weight: 600;
+            border-radius: 9999px;
+            padding: 0.25rem 0.75rem;
+            font-size: 0.75rem;
+            margin: 0.125rem;
+            display: inline-block;
+        }
+        .badge-p2 {
+            background: var(--light-teal);
+            color: var(--primary-teal);
+            font-weight: 600;
+            border-radius: 9999px;
+            padding: 0.25rem 0.75rem;
+            font-size: 0.75rem;
+            margin: 0.125rem;
+            display: inline-block;
+        }
+        .badge-p3 {
+            background: #f3f4f6; /* Tailwind gray-100 */
+            color: #6b7280; /* Tailwind gray-500 */
+            font-weight: 600;
+            border-radius: 9999px;
+            padding: 0.25rem 0.75rem;
+            font-size: 0.75rem;
+            margin: 0.125rem;
+            display: inline-block;
+        }
+
+        /* Table specific styles */
+        .doc-link {
+            color: var(--text-primary);
+            font-weight: 500;
+            cursor: pointer;
+            text-decoration: none;
+        }
+        tr:hover .doc-link {
+            color: var(--primary-teal);
+            text-decoration: underline;
+        }
+        th {
+            background-color: var(--bg-color);
+            color: var(--text-secondary);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            font-size: 0.75rem;
+        }
+        td, th { vertical-align: middle !important; padding: 1rem 1.5rem; }
+        tr { border-bottom: 1px solid var(--border-color); }
+        tbody tr:last-child { border-bottom: none; }
+
+        /* Priority styles (text only) */
+        .priority-p1 {
+            color: var(--warning-orange);
+            font-weight: 700;
+        }
+        .priority-p2 {
+            color: var(--primary-teal);
+            font-weight: 700;
+        }
+        .priority-p3 {
+            color: #6b7280; /* Tailwind gray-500 */
+            font-weight: 700;
+        }
+
+        /* Delete button styling */
+        .delete-btn {
+            color: var(--text-secondary);
+            font-weight: 600;
+            font-size: 0.875rem;
+            cursor: pointer;
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.25rem;
+            transition: all 0.2s ease-in-out;
+        }
+        .delete-btn:hover {
+            color: var(--danger-red);
+            background-color: var(--light-danger-red);
+        }
+        
+        /* Common modal content styling */
+        .modal-content-area {
+            border-radius: 0.75rem;
+            box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+            border: 1px solid var(--border-color);
+            background-color: var(--card-bg-color);
+        }
+        
+        /* Priority Review Modal */
+        #priorityReviewModal .modal-content-area {
+            padding: 2rem;
+            max-width: 42rem;
+            width: 95%;
+            max-height: 90vh;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        #priorityReviewModal .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        #priorityReviewModal .modal-header h3 {
+            color: var(--text-primary);
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+        #priorityReviewModal .file-entry {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.75rem 1rem;
+            background-color: var(--bg-color);
+            border-radius: 0.5rem;
+            border: 1px solid var(--border-color);
+            transition: background-color 0.2s ease-in-out;
+        }
+        #priorityReviewModal .file-entry.highlight-warning {
+            background-color: var(--light-warning-orange);
+            border-color: var(--warning-orange);
+            animation: pulse-orange 1.5s infinite alternate;
+        }
+        @keyframes pulse-orange {
+            from { box-shadow: 0 0 0 0 rgba(249, 115, 22, 0.3); }
+            to { box-shadow: 0 0 0 6px rgba(249, 115, 22, 0); }
+        }
+        #priorityReviewModal .file-name {
+            flex-grow: 1;
+            margin-right: 1rem;
+            font-weight: 500;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+        }
+        #priorityReviewModal .file-priority-select:focus {
+            outline: none;
+            border-color: var(--primary-teal);
+            box-shadow: 0 0 0 2px rgba(var(--primary-teal-rgb), 0.25);
+        }
+        #priorityReviewModal .modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 0.75rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--border-color);
+            margin-top: 1rem;
+        }
+        #priorityReviewModal .modal-close-btn {
+            background-color: var(--border-color);
+            color: var(--text-primary);
+        }
+        #priorityReviewModal .modal-close-btn:hover { background-color: #d1d5db; }
+        #priorityReviewModal .modal-confirm-btn {
+            background-color: var(--primary-teal);
+            color: var(--text-light);
+        }
+        #priorityReviewModal .modal-confirm-btn:hover { background-color: var(--dark-teal); }
+        #priorityReviewModal .error-message {
+            color: var(--danger-red);
+            font-size: 0.875rem;
+            text-align: center;
+            margin-top: -0.5rem;
+            margin-bottom: 0.5rem;
+        }
+        .hidden { display: none !important; }
+    </style>
+</head>
+<body class="p-4 sm:p-6 md:p-8">
+
+    <div class="max-w-7xl w-full mx-auto space-y-8">
+        <!-- Header -->
+        <header class="text-center mb-10">
+            <h1 class="text-3xl md:text-4xl font-bold text-gray-800">RCA Document Management</h1>
+            <p class="text-gray-500 mt-1">Offline analysis and keyword extraction tool</p>
+        </header>
+
+        <!-- Upload Section -->
+        <div class="card">
+            <h2 class="text-xl font-bold mb-4">Upload Documents</h2>
+            <form id="documentUploadForm">
+                <input type="file" id="hiddenFileInput" accept=".txt,.docx" class="hidden" multiple>
+                <label for="hiddenFileInput" class="drop-zone flex flex-col items-center justify-center">
+                    <i class="fa-solid fa-cloud-arrow-up text-4xl text-gray-400 mb-3"></i>
+                    <p class="drop-zone-text">
+                        <span class="drop-zone-link">Click to browse</span> or drag and drop files here
+                    </p>
+                    <p class="text-xs text-gray-400 mt-1">Supports .txt and .docx files</p>
+                </label>
+                <div class="mt-4">
+                    <div id="mainNotificationArea" class="min-h-[3rem] w-full p-3 rounded-lg border border-gray-200 bg-gray-50 flex items-center justify-center text-sm font-medium text-gray-500 transition-colors duration-200">
+                        No active messages.
+                    </div>
+                </div>
+                <div class="flex justify-center mt-4">
+                    <div class="hidden" id="uploadLoader"><div class="loader"></div></div>
+                </div>
+            </form>
+        </div>
+
+        <!-- Stored Documents Section -->
+        <div class="card">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6">
+                <h2 class="text-xl font-bold mb-4 md:mb-0">Stored Documents</h2>
+                <!-- Filters -->
+                <div class="flex flex-wrap gap-4 items-center">
+                    <fieldset class="flex items-center gap-x-4">
+                        <legend class="sr-only">Filter by Priority</legend>
+                        <div class="flex items-center space-x-2">
+                            <input type="radio" id="filterAll" name="priorityFilter" value="all" checked class="h-4 w-4 border-gray-300 text-teal-600 focus:ring-teal-600 cursor-pointer">
+                            <label for="filterAll" class="text-gray-700 font-medium cursor-pointer text-sm">All</label>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <input type="radio" id="filterP1" name="priorityFilter" value="P1" class="h-4 w-4 border-gray-300 text-teal-600 focus:ring-teal-600 cursor-pointer">
+                            <label for="filterP1" class="text-gray-700 font-medium cursor-pointer text-sm">P1 Only</label>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <input type="radio" id="filterP2" name="priorityFilter" value="P2" class="h-4 w-4 border-gray-300 text-teal-600 focus:ring-teal-600 cursor-pointer">
+                            <label for="filterP2" class="text-gray-700 font-medium cursor-pointer text-sm">P2 Only</label>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <input type="radio" id="filterP3" name="priorityFilter" value="P3" class="h-4 w-4 border-gray-300 text-teal-600 focus:ring-teal-600 cursor-pointer">
+                            <label for="filterP3" class="text-gray-700 font-medium cursor-pointer text-sm">P3 Only</label>
+                        </div>
+                    </fieldset>
+                    <div class="relative w-full md:w-48">
+                        <select id="keywordFilter" class="block w-full text-sm p-2 border rounded-lg shadow-sm pr-8 transition bg-white border-gray-300 focus:border-teal-500 focus:ring-teal-500">
+                            <option value="">Filter by Keyword</option>
+                        </select>
+                    </div>
+                    <button id="resetFiltersButton" class="w-full md:w-auto bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold py-2 px-4 rounded-lg shadow-sm transition duration-300 text-sm">
+                        Reset
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Documents Table -->
+            <div class="overflow-x-auto">
+                <table class="min-w-full text-left">
+                    <thead>
+                        <tr>
+                            <th class="cursor-pointer" id="sortNameTh">
+                                Name <i id="sortNameIcon" class="fa-solid fa-sort ml-1"></i>
+                            </th>
+                            <th>Priority</th>
+                            <th>Start Date</th>                             <th>End Date</th>                               <th>Keywords</th>
+                            <th>Actions</th>
+                     </tr>
+                    </thead>
+                    <tbody id="documentList">
+                                                <tr><td colspan="6" class="text-center text-gray-400 py-8">No documents uploaded yet.</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Priority Review Modal -->
+    <div id="priorityReviewModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-gray-900/50" role="dialog" aria-modal="true" aria-labelledby="priorityModalTitle">
+        <div class="modal-content-area">
+            <div class="modal-header">
+                <h3 id="priorityModalTitle">Review Document Priorities</h3>
+                <button type="button" class="modal-close-btn-x text-gray-400 hover:text-gray-600 text-2xl font-bold p-1 rounded-full w-8 h-8 flex items-center justify-center transition-colors bg-transparent hover:bg-gray-100">&times;</button>
+            </div>
+            <div id="modalFilesList" class="space-y-3 max-h-96 overflow-y-auto pr-2">
+                <!-- File entries will be injected by JS -->
+            </div>
+            <div class="modal-footer">
+                <div class="w-full text-center">
+                    <p id="modalErrorMessage" class="error-message hidden"></p>
+                </div>
+                <button type="button" id="cancelUploadModalBtn" class="modal-close-btn font-semibold py-2 px-4 rounded-lg shadow-sm transition">Cancel</button>
+                <button type="button" id="confirmUploadModalBtn" class="modal-confirm-btn font-semibold py-2 px-4 rounded-lg shadow-sm transition">Confirm & Upload</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Other modals will be dynamically added by app.js -->
+
+    <!-- External and App Scripts -->
+    <script src="./js/mammoth.browser.min.js"></script>
+    <!-- <script src="./js/stopwords-en.js"></script>
+    <script src="./js/keyword-extractor.js"></script> -->
+    <script src="./js/app.js"></script>
+</body>
+</html>
